@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from math import sqrt, pow
 
 # make sure we received the right number of arguments
 if len(sys.argv) < 2:
@@ -12,14 +13,15 @@ if len(sys.argv) < 2:
 def neighbor(c):
 
 
-# this function returns the euclidean distance between a and b
+# this function returns the euclidean distance between cities a and b
 def distance(a, b):
+    return int(round(sqrt(pow(a[1]-b[1],2) + pow(a[2]-b[2],2))))
 
 # this function computes the total length of a given tour
 def tourLength(t):
 
 
-# this function performs a 'swap' between vertices a and b
+# this function performs a 'swap' between cities a and b in tour t
 def swap(t, a, b):
 
 
