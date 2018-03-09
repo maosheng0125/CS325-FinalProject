@@ -11,7 +11,7 @@ if len(sys.argv) < 2:
 
 # this function creates an initial tour using nearest neighbor
 def neighbor(c):
-
+    return c
 
 # this function returns the euclidean distance between cities a and b
 def distance(a, b):
@@ -27,11 +27,39 @@ def tourLength(t):
 
 # this function performs a 'swap' between cities a and b in tour t
 def swap(t, a, b):
+    n = [] # the new tour that will contain the the swapped edges
 
+    # the path from 0 until a - 1 is added to the new tour
+    n += t[:a]
+    # the path from a to b is added in reverse order
+    mid = t[a:b+1]
+    mid.reverse()
+    n += mid
+    # the rest of the path after b is added to n
+    n += t[b+1:]
+
+    return n;
 
 # this function contains the 2-opt algorithm that optimizes our tour
 def twoOpt(t):
-    
+    n = [0] # a new temp tour
+    bestLength = tourLength(t) # get tour length of initial tour
+    found = True # bool to test whether a better tour was found
+    while found:
+        found = False
+        for i in range(1, len(t) -1):
+            for j in range(i+1, len(t)):
+                # TODO: add test for edges crossing
+                n = swap(t, i, j)
+                l = tourLength(n)
+                if l < bestLength:
+                    bestLength = l;
+                    t = n
+                    found = True
+                    break
+            if found:
+                break
+    return t
 
 # read input file into an array
 inputfile = open(str(sys.argv[1]))
