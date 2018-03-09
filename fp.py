@@ -19,7 +19,11 @@ def distance(a, b):
 
 # this function computes the total length of a given tour
 def tourLength(t):
-
+    length = 0
+    for n in range(len(t) - 1):
+        length += distance(t[n], t[n+1])
+    length += distance(t[len(t) - 1], t[0])
+    return length
 
 # this function performs a 'swap' between cities a and b in tour t
 def swap(t, a, b):
