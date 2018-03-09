@@ -31,7 +31,7 @@ def swap(t, a, b):
 
 # this function contains the 2-opt algorithm that optimizes our tour
 def twoOpt(t):
-
+    
 
 # read input file into an array
 inputfile = open(str(sys.argv[1]))
@@ -54,5 +54,5 @@ cities = twoOpt(cities)
 outputfile = open(sys.argv[1] + ".tour", 'w')
 outputfile.write(str(tourLength(cities)) + '\n')
 for city in cities:
-    outputfile.write(city[0] + "\n")
+    outputfile.write(str(city[0]) + "\n")
 outputfile.close()
