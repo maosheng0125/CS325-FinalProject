@@ -2,6 +2,7 @@
 
 import sys
 from math import sqrt, pow
+import time
 
 # make sure we received the right number of arguments
 if len(sys.argv) < 2:
@@ -44,8 +45,9 @@ def swap(t, a, b):
 def twoOpt(t):
     n = [0] # a new temp tour
     bestLength = tourLength(t) # get tour length of initial tour
+    startTime = time.clock() # start function timer
     found = True # bool to test whether a better tour was found
-    while found:
+    while found and time.clock() - startTime < 180:
         found = False
         for i in range(1, len(t) -1):
             for j in range(i+1, len(t)):
