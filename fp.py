@@ -79,8 +79,9 @@ cities = neighbor(cities)
 cities = twoOpt(cities)
 
 # output results
+print(str(tourLength(cities)) + ' | ' + str(time.clock() - startTime) + '\n')
 outputfile = open(sys.argv[1] + ".tour", 'w')
-outputfile.write(str(tourLength(cities)) + ' | ' + str(time.clock() - startTime) + '\n')
+outputfile.write(str(tourLength(cities)) + '\n')
 for city in cities:
     outputfile.write(str(city[0]) + "\n")
 outputfile.close()
