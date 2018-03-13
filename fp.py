@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from math import sqrt, pow, floor
+from math import sqrt, pow
 import time
 
 MAX_MINUTES = 3
@@ -43,6 +43,7 @@ def swap(t, a, b):
 def twoOpt(t):
     n = [] # a new temp tour
     bestLength = tourLength(t) # get tour length of initial tour
+    startTime = time.clock() # start function timer
     found = True # bool to test whether a better tour was found
     while found and time.clock() - startTime < 60 * MAX_MINUTES:
         found = False
