@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from math import sqrt, pow
+from math import hypot
 import time
 
 MAX_MINUTES = 3
@@ -18,7 +18,7 @@ def neighbor(c):
 
 # this function returns the euclidean distance between cities a and b
 def distance(a, b):
-    return int(round(sqrt(pow(a[1]-b[1],2) + pow(a[2]-b[2],2))))
+    return int(round(hypot(a[1]-b[1], a[2]-b[2])))
 
 # this function computes the total length of a given tour
 def tourLength(t):
