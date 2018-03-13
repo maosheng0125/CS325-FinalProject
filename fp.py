@@ -12,9 +12,39 @@ if len(sys.argv) < 2:
     print("correct usage: python3 fp.py [filename.txt]")
     sys.exit()
 
+# this function is a helper to 'neighbor'. It returns the nearest neighboring city to a given city 'v', in the set 'c'.
+# Description: v = starting city, c = list of cities
+def getNeighbor(v, c):
+    best = [-1, float("inf")] # Dummy start value: [0 = index id, 1 = distance]
+    totalNumCities = len(c)
+
+    for i in range(0, totalNumCities - 1):
+        # Check to make sure city is not the same city we are traveling from
+        #print ("ci:", c[i]) # Error checking
+        #print ("v:", v) # Error checking
+        if c[i] == v:
+            pass
+        else:
+            dist = distance(v, c[i])
+            if dist < best[1]:
+                best = [i, dist]
+    #print (best) # Error checking
+    return c[best[0]]
+
 # this function creates an initial tour using nearest neighbor
+# Note: Visited cities are removed from c as the loop iterates to cut down on searching time during helper call to 'getNeighbor'.
 def neighbor(c):
-    return c
+    tour = []
+    totalNumCities = len(c)
+    nextCity = c[0]
+    tour.append(nextCity)
+    # Get the nearest neighbor for each city, add it to the tour
+    for i in range(1, totalNumCities):
+        currentCity = getNeighbor(nextCity, c)
+        tour.append(currentCity)
+        c.remove(nextCity) # Remove visited city from list of choices
+        nextCity = currentCity
+    return tour
 
 # this function returns the euclidean distance between cities a and b
 def distance(a, b):
