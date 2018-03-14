@@ -4,7 +4,7 @@ import sys
 from math import hypot
 import time
 
-MAX_MINUTES = 3
+MAX_SECONDS = 178
 
 # make sure we received the right number of arguments
 if len(sys.argv) < 2:
@@ -14,14 +14,13 @@ if len(sys.argv) < 2:
 
 # this function is a helper to 'neighbor'. It returns the nearest neighboring city to a given city 'v', in the set 'c'.
 # Description: v = starting city, c = list of cities
-def getNeighbor(v, c):
+def getNeighbor(v, c, totalNumCities):
     best = [-1, float("inf")] # Dummy start value: [0 = index id, 1 = distance]
-    totalNumCities = len(c)
 
     for i in range(0, totalNumCities - 1):
         # Check to make sure city is not the same city we are traveling from
-        #print ("ci:", c[i]) # Error checking
-        #print ("v:", v) # Error checking
+        # print ("ci:", c[i]) # Error checking
+        # print ("v:", v) # Error checking
         if c[i] == v:
             pass
         else:
@@ -31,8 +30,8 @@ def getNeighbor(v, c):
     #print (best) # Error checking
     return c[best[0]]
 
-# this function creates an initial tour using nearest neighbor
-# Note: Visited cities are removed from c as the loop iterates to cut down on searching time during helper call to 'getNeighbor'.
+# # this function creates an initial tour using nearest neighbor
+# # Note: Visited cities are removed from c as the loop iterates to cut down on searching time during helper call to 'getNeighbor'.
 def neighbor(c):
     tour = []
     totalNumCities = len(c)
@@ -40,11 +39,14 @@ def neighbor(c):
     tour.append(nextCity)
     # Get the nearest neighbor for each city, add it to the tour
     for i in range(1, totalNumCities):
-        currentCity = getNeighbor(nextCity, c)
+        currentCity = getNeighbor(nextCity, c, len(c))
         tour.append(currentCity)
         c.remove(nextCity) # Remove visited city from list of choices
         nextCity = currentCity
     return tour
+
+# def neighbor(c):
+#     return c
 
 # this function returns the euclidean distance between cities a and b
 def distance(a, b):
@@ -57,17 +59,6 @@ def tourLength(t):
         length += distance(t[n], t[n+1])
     length += distance(t[len(t) - 1], t[0])
     return length
-
-# this function performs a 'swap' between cities a and b in tour t
-def swap(t, a, b):
-    n = [] # the new tour that will contain the the swapped edges
-    # the path from 0 until a - 1 is added to the new tour
-    n += t[:a]
-    # the path from a to b is added in reverse order
-    n += t[b:a-1:-1]
-    # the rest of the path after b is added to n
-    n += t[b+1:]
-    return n;
 
 # this function checks whether two edges are crossing each other before performing a swap
 # def crossing(t, i, j):
@@ -122,24 +113,36 @@ def swap(t, a, b):
 #         # exist, in which case the lines are parallel and don't cross.
 #         return False
 
+# this function performs a 'swap' between cities a and b in tour t
+def swap(t, a, b):
+    while a < b:
+        temp = t[a]
+        t[a] = t[b]
+        t[b] = temp
+        a += 1
+        b -= 1
+
 # this function contains the 2-opt algorithm that optimizes our tour
 def twoOpt(t):
-    n = [] # a new temp tour
-    bestLength = tourLength(t) # get tour length of initial tour
-    found = True # bool to test whether a better tour was found
-    while found and time.clock() - startTime < 60 * MAX_MINUTES:
-        found = False
-        for i in range(1, len(t) -1):
+    while time.clock() - startTime < MAX_SECONDS:
+        best = 0
+        imin = -1
+        jmin = -1
+        for i in range(1, len(t) -2):
             for j in range(i+1, len(t)):
-                n = swap(t, i, j)
-                l = tourLength(n)
-                if l < bestLength:
-                    bestLength = l;
-                    t = n
-                    found = True
-                    break
-            if found:
-                break
+                if j != len(t) - 1:
+                    change = distance(t[i],t[j+1]) + distance(t[i-1],t[j]) - distance(t[i],t[i-1]) - distance(t[j],t[j+1])
+                else:
+                    change = distance(t[i],t[0]) + distance(t[i-1],t[j]) - distance(t[i],t[i-1]) - distance(t[j],t[0])
+
+                if change < best:
+                    best = change
+                    imin = i
+                    jmin = j
+        if best >= 0:
+            break
+        swap(t, imin, jmin)
+
     return t
 
 # read input file into an array
@@ -161,9 +164,10 @@ cities = neighbor(cities)
 cities = twoOpt(cities)
 
 # output results
-print(str(tourLength(cities)) + ' | ' + str(time.clock() - startTime) + '\n')
+tl = str(tourLength(cities))
+print(tl + ' | ' + str(time.clock() - startTime) + '\n')
 outputfile = open(sys.argv[1] + ".tour", 'w')
-outputfile.write(str(tourLength(cities)) + '\n')
+outputfile.write(tl + '\n')
 for city in cities:
     outputfile.write(str(city[0]) + "\n")
 outputfile.close()
