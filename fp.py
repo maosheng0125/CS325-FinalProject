@@ -4,7 +4,7 @@ import sys
 from math import hypot
 import time
 
-MAX_SECONDS = 178
+MAX_SECONDS = 6000
 
 # make sure we received the right number of arguments
 if len(sys.argv) < 2:
@@ -44,9 +44,6 @@ def neighbor(c):
         c.remove(nextCity) # Remove visited city from list of choices
         nextCity = currentCity
     return tour
-
-# def neighbor(c):
-#     return c
 
 # this function returns the euclidean distance between cities a and b
 def distance(a, b):
@@ -128,7 +125,9 @@ def twoOpt(t):
         best = 0
         imin = -1
         jmin = -1
-        for i in range(1, len(t) -2):
+        for i in range(1, len(t) -1):
+            if time.clock() - startTime >= MAX_SECONDS:
+                break
             for j in range(i+1, len(t)):
                 if j != len(t) - 1:
                     change = distance(t[i],t[j+1]) + distance(t[i-1],t[j]) - distance(t[i],t[i-1]) - distance(t[j],t[j+1])
@@ -146,7 +145,6 @@ def twoOpt(t):
     return t
 
 # read input file into an array
-startTime = time.clock() # start function timer
 inputfile = open(str(sys.argv[1]))
 lines = inputfile.readlines()
 inputfile.close()
@@ -157,15 +155,21 @@ for line in lines:
     city = [int(n) for n in line.split()] # 0 is the city identifier, 1 is x, 2 is y
     cities.append(city)
 
+# record start time
+startTime = time.clock()
+
 # construct the initial tour
 cities = neighbor(cities)
 
 # optimize it with twoOpt
 cities = twoOpt(cities)
 
+# record end time
+endTime = str(time.clock() - startTime)
+
 # output results
 tl = str(tourLength(cities))
-print(tl + ' | ' + str(time.clock() - startTime) + '\n')
+print(tl + ' | ' + endTime + '\n')
 outputfile = open(sys.argv[1] + ".tour", 'w')
 outputfile.write(tl + '\n')
 for city in cities:
